@@ -72,8 +72,8 @@ peers:
     defillama_slug: uniswap
     chain: ethereum
     contract_address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
-    value_accrual: none
-    notes: "Fee switch not activated; pure governance token."
+    value_accrual: burn
+    notes: "Firepit burns UNI from protocol fees (~10.5M/yr projected). Fee switch to token holders not activated."
 
   - symbol: LDO
     name: Lido
