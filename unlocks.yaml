@@ -1,0 +1,239 @@
+# ============================================================================
+# 90-day Forward Unlock Schedule (manually curated, event-level)
+# ============================================================================
+# Reality: no free API for on-chain vesting schedules. For a peer set of 8,
+# manual curation from public tokenomics docs is the most defensible approach.
+# Each entry has explicit sources + last-verified date so the figure can
+# always be traced back to a primary reference. See unlocks_research.md for
+# the full research log.
+#
+# Structure (new 2026-04-17): discrete cliff events live in `events` so the
+# forward-supply-curve builder can plot them as step increases. Ongoing
+# inflation/emission is kept OUT of this file — it's captured separately via
+# `gross_inflation_annualized` in peer_table.csv and added as a smooth ramp
+# in the forward curve (compute.compute_forward_supply_curve).
+#
+# As-of date:  2026-04-17
+# Window:      2026-04-17 → 2026-07-16 (next 90 days)
+#
+# Fields:
+#   symbol                    — matches peer_set.yaml
+#   has_scheduled_unlocks     — true/false; if false the token is fully vested
+#                               OR releases are continuous/inflationary (see
+#                               counted_in_inflation).
+#   events                    — list of discrete cliff events in window:
+#                                 - date: YYYY-MM-DD
+#                                 - tokens: <int>
+#                                 - buckets: "core_contributors,investors,..."
+#                                 - description: freeform
+#   ninety_day_tokens         — sum of events in window (for the summary table)
+#   ninety_day_pct_of_circ    — ninety_day_tokens / current circulating supply
+#   cliff_vs_linear           — 'cliff' | 'linear' | 'mixed' | 'discretionary' | 'n/a'
+#   insider_share_pct         — % going to team/early investors vs community
+#                               (best estimate; 'n/a' if not disclosed)
+#   counted_in_inflation      — true if these tokens are already reflected in
+#                               gross_inflation_annualized (avoid double-count
+#                               in the forward curve)
+#   source_urls               — list of primary sources
+#   last_verified             — YYYY-MM-DD
+#   notes                     — caveats
+# ============================================================================
+
+as_of: 2026-04-17
+window_days: 90
+window_end: 2026-07-16
+
+unlocks:
+  - symbol: OP
+    has_scheduled_unlocks: true
+    events:
+      - date: 2026-04-30
+        tokens: 31_340_000
+        buckets: core_contributors,investors
+        description: >
+          Monthly cliff: ~16.54M Core Contributors + ~14.8M Investors.
+      - date: 2026-05-31
+        tokens: 31_340_000
+        buckets: core_contributors,investors
+        description: >
+          Monthly cliff: ~16.54M Core Contributors + ~14.8M Investors.
+      - date: 2026-06-30
+        tokens: 31_340_000
+        buckets: core_contributors,investors
+        description: >
+          Monthly cliff: ~16.54M Core Contributors + ~14.8M Investors.
+    ninety_day_tokens: 94_020_000
+    ninety_day_pct_of_circ: 0.0440
+    cliff_vs_linear: cliff
+    insider_share_pct: 0.52
+    counted_in_inflation: false
+    source_urls:
+      - https://tokenomist.ai/optimism
+      - https://cryptorank.io/price/optimism/vesting
+    last_verified: 2026-04-17
+    notes: >
+      **The headline at-risk unlock in this peer set.** Optimism's vesting
+      contract was coded at genesis (May 2022) with monthly cliff releases of
+      ~31.34M OP to Core Contributors and Investors. Schedule runs through 2027,
+      followed by perpetual 2% annual inflation. CoinDesk does NOT track OP
+      `issued` (OP uses pre-minted supply with chain-of-custody release), so
+      these cliffs must be layered on top of the ~0 inflation figure to get true
+      forward supply pressure.
+
+  - symbol: LINK
+    has_scheduled_unlocks: true
+    events:
+      - date: 2026-07-15
+        tokens: 15_000_000
+        buckets: treasury_discretionary
+        description: >
+          Expected quarterly treasury release (no hard on-chain schedule).
+          Historical range: 10–20M LINK per quarter. Exact date TBD — modeled
+          as mid-July based on prior quarterly cadence. April 2026 quarterly
+          (~19M LINK) occurred Apr 4, just before the window opens.
+    ninety_day_tokens: 15_000_000
+    ninety_day_pct_of_circ: 0.0206
+    cliff_vs_linear: discretionary
+    insider_share_pct: n/a
+    counted_in_inflation: false
+    source_urls:
+      - https://coinpedia.org/news/chainlink-unlocks-19m-link-165m-moved-to-market/
+      - https://cryptorank.io/news/feed/6c881-chainlink-link-unlock-binance-transfer
+      - https://tokenomist.ai/chainlink
+    last_verified: 2026-04-17
+    notes: >
+      Chainlink has no on-chain vesting contract — the formal vesting schedule
+      ended in 2024. ~273M LINK remain in non-circulating treasury across 24
+      wallet contracts, released at Chainlink Labs' discretion. Behavioural
+      pattern: quarterly releases of 10–20M LINK, ~75–80% routed to Binance,
+      ~20–25% to the staking reward multisig. Amount and timing are estimates
+      based on 3+ years of observed quarterly cadence; the figure is not
+      contractually enforced and could be accelerated, delayed, or skipped.
+
+  - symbol: UNI
+    has_scheduled_unlocks: true
+    events:
+      - date: 2026-07-01
+        tokens: 5_000_000
+        buckets: uniswap_labs_growth_budget
+        description: >
+          Q3 2026 tranche of the UNIfication annual growth budget
+          (20M UNI/year distributed quarterly to Uniswap Labs under the
+          DUNI service-provider agreement, via on-chain vesting contract).
+    ninety_day_tokens: 5_000_000
+    ninety_day_pct_of_circ: 0.0079
+    cliff_vs_linear: cliff
+    insider_share_pct: 1.00
+    counted_in_inflation: false
+    source_urls:
+      - https://blog.uniswap.org/unification
+      - https://vote.uniswapfoundation.org/proposals/93
+      - https://tokenomist.ai/uniswap
+    last_verified: 2026-04-17
+    notes: >
+      UNIfication (passed Dec 2025, effective Jan 1 2026) introduced a new
+      20M UNI/year vesting contract distributing to Uniswap Labs as service
+      provider. Q1 (Jan 1) and Q2 (~Apr 1) tranches already occurred before
+      the window opens. Q3 tranche (~Jul 1) of ~5M UNI is the in-window event.
+      Partially offset by the Firepit protocol-fee burn (~1M UNI burned/quarter),
+      giving ~4M UNI net new supply over the window. Original 2020–2024
+      four-year vesting schedule is complete. Total supply reduced from
+      1B → ~900M after the 100M treasury burn on Dec 28 2025.
+
+  - symbol: ETH
+    has_scheduled_unlocks: false
+    events: []
+    ninety_day_tokens: 0
+    ninety_day_pct_of_circ: 0.0
+    cliff_vs_linear: n/a
+    insider_share_pct: n/a
+    counted_in_inflation: true
+    source_urls:
+      - https://ethereum.org/roadmap/merge/issuance/
+    last_verified: 2026-04-17
+    notes: >
+      No team/investor/foundation vesting schedule — never existed. All
+      supply growth is validator block-reward issuance (~1,700 ETH/day),
+      already captured in gross_inflation_annualized from CoinDesk `issued`.
+      EIP-1559 burn is separate (destruction of existing circulating ETH from
+      user fees) and does not enter the at-risk-new-supply calculation.
+
+  - symbol: SOL
+    has_scheduled_unlocks: false
+    events: []
+    ninety_day_tokens: 0
+    ninety_day_pct_of_circ: 0.0
+    cliff_vs_linear: n/a
+    insider_share_pct: n/a
+    counted_in_inflation: true
+    source_urls:
+      - https://tokenomist.ai/solana
+      - https://solanacompass.com/tokenomics
+    last_verified: 2026-04-17
+    notes: >
+      Vesting fully complete — tokenomist.ai confirms "Solana is fully
+      unlocked." Original team/investor/foundation/validator schedules all
+      concluded. Ongoing supply growth is 100% protocol inflation (~3.9%
+      annualized, epoch-by-epoch), captured in gross_inflation_annualized
+      from CoinDesk `issued`. Residual non-vesting drip: FTX/Alameda estate
+      has been unstaking ~194–198K SOL/month for creditor payouts
+      (~580K SOL over the 90d window, declining). Not modeled as a cliff
+      event — this is a bankruptcy wind-down, not a vesting schedule, and
+      the quantity is trivial relative to inflation (~0.1% of circ).
+
+  - symbol: AAVE
+    has_scheduled_unlocks: false
+    events: []
+    ninety_day_tokens: 0
+    ninety_day_pct_of_circ: 0.0
+    cliff_vs_linear: n/a
+    insider_share_pct: n/a
+    counted_in_inflation: false
+    source_urls:
+      - https://tokenomist.ai/aave
+      - https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203
+    last_verified: 2026-04-17
+    notes: >
+      AAVE is fully unlocked ("94.91% of total supply" per tokenomist.ai).
+      Remaining ~652K AAVE sits in the Ecosystem Reserve, releasable only
+      by governance vote. Ongoing Safety Module emissions to stkAAVE stakers
+      are governance-set (proposed ~220 AAVE/day = ~19.8K AAVE over 90d,
+      ~0.13% of circ), and are net-offset by the active DAO buyback program
+      (205K+ AAVE repurchased since April 2025). Net effect is deflationary
+      at current rates; not modeled as an unlock event.
+
+  - symbol: LDO
+    has_scheduled_unlocks: false
+    events: []
+    ninety_day_tokens: 0
+    ninety_day_pct_of_circ: 0.0
+    cliff_vs_linear: n/a
+    insider_share_pct: n/a
+    counted_in_inflation: false
+    source_urls:
+      - https://tokenomist.ai/lido-dao
+      - https://help.lido.fi/en/articles/5231885-what-is-the-token-release-schedule-for-ldo
+    last_verified: 2026-04-17
+    notes: >
+      Lido DAO is fully unlocked; vesting ended in 2024. Remaining ~151M LDO
+      in treasury is governance-discretionary — no vesting schedule. Active
+      $20M LDO buyback program (approved ~Mar 30 2026) is net deflationary.
+
+  - symbol: CRV
+    has_scheduled_unlocks: false
+    events: []
+    ninety_day_tokens: 0
+    ninety_day_pct_of_circ: 0.0
+    cliff_vs_linear: n/a
+    insider_share_pct: n/a
+    counted_in_inflation: true
+    source_urls:
+      - https://resources.curve.finance/crv-token/supply-distribution/
+      - https://news.curve.finance/crv-emission-rate-gets-a-cut-as-programmed/
+    last_verified: 2026-04-17
+    notes: >
+      Team/investor/employee vesting complete as of Aug 12 2024. Post-Aug 2024,
+      100% of new CRV supply is continuous community gauge emissions hardcoded
+      in the token contract (~115.5M/year through Aug 2026, ~28.3M over the
+      90d window ≈ 1.9% of circ). Captured in gross_inflation_annualized from
+      CoinDesk. Next ~15.9% emission cut is August 2026, just outside the window.

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dormancy · Chainlink Peer Valuation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .chart-frame { width: 100%; height: 560px; border: 0; background: white; border-radius: 0.5rem; }
+    .link-accent { color: #2563EB; }
+    .link-row { background: linear-gradient(90deg, rgba(37,99,235,0.08), transparent); }
+    .mono { font-family: 'SF Mono', Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+  <nav class="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style="background:#2563EB"></span>
+        <span class="font-semibold text-white">Chainlink Peer Valuation</span>
+      </a>
+      <div class="flex items-center gap-1"><a href="valuation.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Valuation</a><a href="supply.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Supply</a><a href="dormancy.html" class="px-3 py-2 text-sm rounded-md transition bg-zinc-800 text-white">Dormancy</a><a href="incentives.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Incentives</a><a href="methodology.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Methodology</a></div>
+    </div>
+  </nav>
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    
+    <header class="mb-6 pb-4 border-b border-zinc-900">
+      <h1 class="text-2xl font-semibold text-white">Dormancy</h1>
+      <p class="text-sm text-zinc-400 mt-1">Share of circulating supply held by addresses with no qualifying activity in the last 180 days.</p>
+    </header>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">180-Day Dormant Supply %</h3>
+      <iframe src="charts/dormancy_180d.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">EVM: outbound-transfer signal (dust-attack resistant). SOL: balance-row updates. ETH: native-balance reconstruction via Dune Q7332769.</p>
+    </section>
+    <section class="rounded-lg border border-zinc-900 bg-zinc-950 p-5 mt-6">
+      <h3 class="text-sm font-semibold text-white mb-3">Why the signal differs by chain</h3>
+      <ul class="text-sm text-zinc-400 space-y-2 leading-relaxed list-disc pl-5">
+        <li><span class="text-zinc-200 font-medium">EVM (LINK / AAVE / UNI / LDO / CRV / OP):</span> active = addresses that have <em>sent</em> the token in 180d. Balance-update signal is vulnerable to dust attacks — an observed spammer touched every UNI holder.</li>
+        <li><span class="text-zinc-200 font-medium">Solana:</span> balance-row updates are acceptable. Rent-exempt minimums make spamming 500M+ accounts cost ~$440K+.</li>
+        <li><span class="text-zinc-200 font-medium">Ethereum (native):</span> no curated Dune balance table; Q7332769 reconstructs native-ETH balance from genesis + withdrawals + tx/trace flows − gas. ~29.7% dormant tracks the CoinDesk staked proxy (31.3%).</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="max-w-7xl mx-auto px-4 py-8 text-xs text-zinc-500 border-t border-zinc-900 mt-12">
+    <div class="flex justify-between">
+      <span>As of 2026-04-18 · Subject: <span class="link-accent font-medium">LINK</span></span>
+      <span>Sources: CoinGecko · DeFiLlama · CoinDesk · Dune · Etherscan</span>
+    </div>
+  </footer>
+</body>
+</html>

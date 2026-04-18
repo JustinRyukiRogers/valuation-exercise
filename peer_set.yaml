@@ -1,0 +1,109 @@
+# ============================================================================
+# Peer Set Config — flexible list of projects to include in the valuation view.
+# ============================================================================
+# Add, remove, or reorder entries here; the pipeline picks them up automatically.
+# Each entry is a single source of truth that maps a project across data sources.
+#
+# Fields:
+#   symbol            — ticker symbol (display)
+#   name              — human-readable project name
+#   category          — grouping for comparisons (Oracle / L1 / Lending / DEX / ...)
+#   type              — 'protocol' (uses DeFiLlama protocol fees) or 'chain' (uses chain fees)
+#   coingecko_id      — CoinGecko API slug (from coingecko.com URL)
+#   defillama_slug    — DeFiLlama protocol slug (from defillama.com URL)
+#   chain             — primary chain for on-chain queries (ethereum / solana / ...)
+#   contract_address  — token contract address on `chain` (for holder concentration queries)
+#   value_accrual     — qualitative value-accrual mechanism (burn / buyback / staking / none / mixed)
+#   notes             — freeform notes for the methodology doc
+# ============================================================================
+
+peers:
+  - symbol: LINK
+    name: Chainlink
+    category: Oracle
+    type: protocol
+    coingecko_id: chainlink
+    defillama_slug: chainlink
+    chain: ethereum
+    contract_address: "0x514910771AF9Ca656af840dff83E8264EcF986CA"
+    value_accrual: staking
+    notes: "Subject. Node operator fees are supply-side; treasury revenue is nascent."
+
+  - symbol: ETH
+    name: Ethereum
+    category: L1
+    type: chain
+    coingecko_id: ethereum
+    defillama_slug: ethereum
+    chain: ethereum
+    contract_address: null
+    value_accrual: burn
+    uncapped: true
+    notes: "EIP-1559 burn; validator rewards inflation offset by burn. No hard max supply → FDV reported as N/A."
+
+  - symbol: SOL
+    name: Solana
+    category: L1
+    type: chain
+    coingecko_id: solana
+    defillama_slug: solana
+    chain: solana
+    contract_address: null
+    value_accrual: burn
+    uncapped: true
+    notes: "50% of base fees burned; inflation schedule decreasing toward 1.5%. No hard max supply → FDV reported as N/A."
+
+  - symbol: AAVE
+    name: Aave
+    category: Lending
+    type: protocol
+    coingecko_id: aave
+    defillama_slug: aave
+    chain: ethereum
+    contract_address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"
+    value_accrual: buyback
+    notes: "Aavenomics introduces buyback-and-distribute to stakers."
+
+  - symbol: UNI
+    name: Uniswap
+    category: DEX
+    type: protocol
+    coingecko_id: uniswap
+    defillama_slug: uniswap
+    chain: ethereum
+    contract_address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+    value_accrual: none
+    notes: "Fee switch not activated; pure governance token."
+
+  - symbol: LDO
+    name: Lido
+    category: Liquid Staking
+    type: protocol
+    coingecko_id: lido-dao
+    defillama_slug: lido
+    chain: ethereum
+    contract_address: "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32"
+    value_accrual: none
+    notes: "Treasury accrual via 10% staking fee; no direct token accrual."
+
+  - symbol: CRV
+    name: Curve
+    category: DEX
+    type: protocol
+    coingecko_id: curve-dao-token
+    defillama_slug: curve-dex
+    chain: ethereum
+    contract_address: "0xD533a949740bb3306d119CC777fa900bA034cd52"
+    value_accrual: fee_share
+    notes: "veCRV model: lockers receive 50% of trading fees as 3CRV."
+
+  - symbol: OP
+    name: Optimism
+    category: L2
+    type: chain
+    coingecko_id: optimism
+    defillama_slug: op-mainnet
+    chain: optimism
+    contract_address: "0x4200000000000000000000000000000000000042"
+    value_accrual: none
+    notes: "Emerging L2 with OP token incentive model."

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valuation · Chainlink Peer Valuation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .chart-frame { width: 100%; height: 560px; border: 0; background: white; border-radius: 0.5rem; }
+    .link-accent { color: #2563EB; }
+    .link-row { background: linear-gradient(90deg, rgba(37,99,235,0.08), transparent); }
+    .mono { font-family: 'SF Mono', Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+  <nav class="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style="background:#2563EB"></span>
+        <span class="font-semibold text-white">Chainlink Peer Valuation</span>
+      </a>
+      <div class="flex items-center gap-1"><a href="valuation.html" class="px-3 py-2 text-sm rounded-md transition bg-zinc-800 text-white">Valuation</a><a href="supply.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Supply</a><a href="dormancy.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Dormancy</a><a href="incentives.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Incentives</a><a href="methodology.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Methodology</a></div>
+    </div>
+  </nav>
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    
+    <header class="mb-6 pb-4 border-b border-zinc-900">
+      <h1 class="text-2xl font-semibold text-white">Valuation & Fees</h1>
+      <p class="text-sm text-zinc-400 mt-1">Market cap, FDV, and price-to-fees / price-to-retained-revenue multiples.</p>
+    </header>
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-white mb-4">Valuation Multiples</h2>
+      <div class="overflow-x-auto rounded-lg border border-zinc-900 bg-zinc-950">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-zinc-500 border-b border-zinc-900">
+              <th class="py-3 px-4">Symbol</th>
+              <th class="py-3 px-4 text-right">Market Cap</th>
+              <th class="py-3 px-4 text-right">FDV</th>
+              <th class="py-3 px-4 text-right">FDV/MC</th>
+              <th class="py-3 px-4 text-right">Fees (ann)</th>
+              <th class="py-3 px-4 text-right">P/F</th>
+              <th class="py-3 px-4 text-right">Revenue (ann)</th>
+              <th class="py-3 px-4 text-right">P/RR</th>
+              <th class="py-3 px-4">Accrual</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">ETH</td>
+          <td class="py-2 px-4 mono text-right">$281.6B</td>
+          <td class="py-2 px-4 mono text-right"><span class="text-zinc-500">Uncapped</span></td>
+          <td class="py-2 px-4 mono text-right"><span class="text-zinc-500">—</span></td>
+          <td class="py-2 px-4 mono text-right">$111.2M</td>
+          <td class="py-2 px-4 mono text-right">2533.3x</td>
+          <td class="py-2 px-4 mono text-right">$23.7M</td>
+          <td class="py-2 px-4 mono text-right">11879.1x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-orange-950/60 text-orange-300 ring-orange-900/50">Burn</span></td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">SOL</td>
+          <td class="py-2 px-4 mono text-right">$49.0B</td>
+          <td class="py-2 px-4 mono text-right"><span class="text-zinc-500">Uncapped</span></td>
+          <td class="py-2 px-4 mono text-right"><span class="text-zinc-500">—</span></td>
+          <td class="py-2 px-4 mono text-right">$191.1M</td>
+          <td class="py-2 px-4 mono text-right">256.7x</td>
+          <td class="py-2 px-4 mono text-right">$20.7M</td>
+          <td class="py-2 px-4 mono text-right">2367.4x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-orange-950/60 text-orange-300 ring-orange-900/50">Burn</span></td>
+        </tr>
+        <tr class="link-row border-b border-zinc-900">
+          <td class="py-2 px-4 font-semibold link-accent">LINK</td>
+          <td class="py-2 px-4 mono text-right">$6.8B</td>
+          <td class="py-2 px-4 mono text-right">$9.3B</td>
+          <td class="py-2 px-4 mono text-right">1.4x</td>
+          <td class="py-2 px-4 mono text-right">$58.8M</td>
+          <td class="py-2 px-4 mono text-right">115.6x</td>
+          <td class="py-2 px-4 mono text-right">$55.5M</td>
+          <td class="py-2 px-4 mono text-right">122.3x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-sky-950/60 text-sky-300 ring-sky-900/50">Staking</span></td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">UNI</td>
+          <td class="py-2 px-4 mono text-right">$2.1B</td>
+          <td class="py-2 px-4 mono text-right">$3.0B</td>
+          <td class="py-2 px-4 mono text-right">1.4x</td>
+          <td class="py-2 px-4 mono text-right">$417.4M</td>
+          <td class="py-2 px-4 mono text-right">5.1x</td>
+          <td class="py-2 px-4 mono text-right">$41.4M</td>
+          <td class="py-2 px-4 mono text-right">51.1x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-zinc-800 text-zinc-400 ring-zinc-700">None</span></td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">AAVE</td>
+          <td class="py-2 px-4 mono text-right">$1.6B</td>
+          <td class="py-2 px-4 mono text-right">$1.7B</td>
+          <td class="py-2 px-4 mono text-right">1.1x</td>
+          <td class="py-2 px-4 mono text-right">$544.3M</td>
+          <td class="py-2 px-4 mono text-right">3.0x</td>
+          <td class="py-2 px-4 mono text-right">$72.7M</td>
+          <td class="py-2 px-4 mono text-right">22.4x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-emerald-950/60 text-emerald-300 ring-emerald-900/50">Buyback</span></td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">CRV</td>
+          <td class="py-2 px-4 mono text-right">$343.1M</td>
+          <td class="py-2 px-4 mono text-right">$542.9M</td>
+          <td class="py-2 px-4 mono text-right">1.6x</td>
+          <td class="py-2 px-4 mono text-right">$39.0M</td>
+          <td class="py-2 px-4 mono text-right">8.8x</td>
+          <td class="py-2 px-4 mono text-right">$5.3M</td>
+          <td class="py-2 px-4 mono text-right">64.4x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-violet-950/60 text-violet-300 ring-violet-900/50">Fee Share</span></td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">LDO</td>
+          <td class="py-2 px-4 mono text-right">$342.6M</td>
+          <td class="py-2 px-4 mono text-right">$403.5M</td>
+          <td class="py-2 px-4 mono text-right">1.2x</td>
+          <td class="py-2 px-4 mono text-right">$527.5M</td>
+          <td class="py-2 px-4 mono text-right">0.6x</td>
+          <td class="py-2 px-4 mono text-right">$52.7M</td>
+          <td class="py-2 px-4 mono text-right">6.5x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-zinc-800 text-zinc-400 ring-zinc-700">None</span></td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">OP</td>
+          <td class="py-2 px-4 mono text-right">$272.3M</td>
+          <td class="py-2 px-4 mono text-right">$547.3M</td>
+          <td class="py-2 px-4 mono text-right">2.0x</td>
+          <td class="py-2 px-4 mono text-right">$517.1K</td>
+          <td class="py-2 px-4 mono text-right">526.5x</td>
+          <td class="py-2 px-4 mono text-right">$508.8K</td>
+          <td class="py-2 px-4 mono text-right">535.1x</td>
+          <td class="py-2 px-4"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-zinc-800 text-zinc-400 ring-zinc-700">None</span></td>
+        </tr></tbody>
+        </table>
+      </div>
+      <p class="text-xs text-zinc-500 mt-3">ETH & SOL have no hard max supply — FDV reported as Uncapped. DeFiLlama <span class="mono">dailyRevenue</span> reported as-is for LINK/UNI; value accrual is a separate question.</p>
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">Market Cap / Total Fees (P/F)</h3>
+      <iframe src="charts/valuation_p_f.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">User-paid fees — covers operators, LPs, treasury.</p>
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">Market Cap / Retained Revenue (P/RR)</h3>
+      <iframe src="charts/valuation_p_rf.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">DeFiLlama dailyRevenue × 365. Lower = cheaper relative to retained protocol revenue.</p>
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">Annualized Fees & Revenue Snapshot</h3>
+      <iframe src="charts/fees_snapshot.html" class="chart-frame" loading="lazy"></iframe>
+      
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">90-Day Fee Trend</h3>
+      <iframe src="charts/fees_90d_trend.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">Relative momentum vs. the snapshot figures above.</p>
+    </section>
+  </main>
+  <footer class="max-w-7xl mx-auto px-4 py-8 text-xs text-zinc-500 border-t border-zinc-900 mt-12">
+    <div class="flex justify-between">
+      <span>As of 2026-04-18 · Subject: <span class="link-accent font-medium">LINK</span></span>
+      <span>Sources: CoinGecko · DeFiLlama · CoinDesk · Dune · Etherscan</span>
+    </div>
+  </footer>
+</body>
+</html>

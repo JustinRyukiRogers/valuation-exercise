@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Methodology · Chainlink Peer Valuation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .chart-frame { width: 100%; height: 560px; border: 0; background: white; border-radius: 0.5rem; }
+    .link-accent { color: #2563EB; }
+    .link-row { background: linear-gradient(90deg, rgba(37,99,235,0.08), transparent); }
+    .mono { font-family: 'SF Mono', Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+  <nav class="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style="background:#2563EB"></span>
+        <span class="font-semibold text-white">Chainlink Peer Valuation</span>
+      </a>
+      <div class="flex items-center gap-1"><a href="valuation.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Valuation</a><a href="supply.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Supply</a><a href="dormancy.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Dormancy</a><a href="incentives.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Incentives</a><a href="methodology.html" class="px-3 py-2 text-sm rounded-md transition bg-zinc-800 text-white">Methodology</a></div>
+    </div>
+  </nav>
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    
+    <header class="mb-6 pb-4 border-b border-zinc-900">
+      <h1 class="text-2xl font-semibold text-white">Methodology</h1>
+      <p class="text-sm text-zinc-400 mt-1">Metric definitions, data sources, and the rationale for dropped metrics.</p>
+    </header>
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-white mb-4">Data Sources</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-sm font-medium text-white mb-1">CoinGecko</div>
+          <p class="text-xs text-zinc-400">Price, market cap, FDV, circulating & total supply, 365d price series.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-sm font-medium text-white mb-1">DeFiLlama</div>
+          <p class="text-xs text-zinc-400">Protocol fees, revenue, TVL. Free tier. <span class="mono">dailyRevenue</span> used as-is for all peers.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-sm font-medium text-white mb-1">CoinDesk</div>
+          <p class="text-xs text-zinc-400">Historical supply breakdown — issued, burned, staked, locked. Primary source for inflation & illiquid share.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-sm font-medium text-white mb-1">Dune Analytics</div>
+          <p class="text-xs text-zinc-400">On-chain SQL for SOL burn, AAVE buyback, UNI Firepit, 180d dormancy, LINK treasury outflow. 2,500 q/mo budget.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-white mb-4">Canonical Metrics</h2>
+      <div class="rounded-lg border border-zinc-900 bg-zinc-950 divide-y divide-zinc-900">
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">Market Cap, FDV, FDV/MC</div>
+          <p class="text-xs text-zinc-400 mt-1">Circ × price; max × price; supply overhang ratio. Uncapped tokens (ETH/SOL) report FDV as N/A.</p>
+        </div>
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">Annualized Fees, P/F, Retained Revenue, P/RR</div>
+          <p class="text-xs text-zinc-400 mt-1">30-day trailing × 12. Retained revenue is DeFiLlama <span class="mono">dailyRevenue</span> accepted as-is — whether the token claims that revenue is captured separately by Value Accrual Mechanism.</p>
+        </div>
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">90d At-Risk Unlocks</div>
+          <p class="text-xs text-zinc-400 mt-1">Forward token supply entering circulation over 90d — team/investor/ecosystem cliffs + scheduled emissions. Sourced from <span class="mono">unlocks.yaml</span> (manual, per-peer).</p>
+        </div>
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">Burns + Buybacks</div>
+          <p class="text-xs text-zinc-400 mt-1">Annualized USD destroyed/repurchased. ETH (EIP-1559), SOL (base fee), AAVE (TWAP, 30d rate), LINK (Reserve dutch auction), UNI (Firepit).</p>
+        </div>
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">Net Dilution & Rewards-Adjusted Dilution</div>
+          <p class="text-xs text-zinc-400 mt-1">Net = gross forward supply − buybacks, annualized via day-90 × 365/90. Rewards-adjusted subtracts the yield available to active stakers.</p>
+        </div>
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">180d Dormant Supply %</div>
+          <p class="text-xs text-zinc-400 mt-1">Share of circ held by addresses with no qualifying activity in 180d. EVM uses outbound-transfer signal; SOL uses balance updates; ETH uses native-balance reconstruction.</p>
+        </div>
+        <div class="p-4">
+          <div class="text-sm font-medium text-white">Incentive Capture Yield</div>
+          <p class="text-xs text-zinc-400 mt-1">Yield an active holder captures through the token's accrual mechanism — validator rewards, staking APR, buyback-and-distribute, or veCRV fee share. Mechanism and yield per peer in <span class="mono">incentive_yield.yaml</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-white mb-4">Dropped Metrics</h2>
+      <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-xs uppercase tracking-wider text-zinc-500 border-b border-zinc-900 text-left">
+              <th class="py-2 pr-4">Metric</th>
+              <th class="py-2">Reason</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-900">
+            <tr><td class="py-2 pr-4 text-zinc-300">Circulating Supply %</td><td class="py-2 text-xs text-zinc-400">Information already in FDV/MC.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Forward Revenue Forecasts</td><td class="py-2 text-xs text-zinc-400">Narrative model, not a comparable.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Gross/Net Inflation standalone</td><td class="py-2 text-xs text-zinc-400">Folded into 90d At-Risk Unlocks.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Exchange Balance, Flow</td><td class="py-2 text-xs text-zinc-400">CEX attribution inconsistent across peer set at free tier.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Top 10/100 Holder Concentration</td><td class="py-2 text-xs text-zinc-400">Etherscan Pro required; no comparable SOL equivalent.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Supply Velocity</td><td class="py-2 text-xs text-zinc-400">30d volume is wash-trade contaminated.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Real Yield, Staking Penetration</td><td class="py-2 text-xs text-zinc-400">CoinDesk coverage gaps; footnote-level.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Economic Earnings, P/E</td><td class="py-2 text-xs text-zinc-400">Double-count issues on ETH/SOL validator rewards.</td></tr>
+            <tr><td class="py-2 pr-4 text-zinc-300">Token Incentive Expense</td><td class="py-2 text-xs text-zinc-400">Superseded by Incentive Capture Yield.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-white mb-4">Methodology Footnotes</h2>
+      <div class="space-y-3 text-sm text-zinc-400">
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-zinc-200 font-medium mb-1">LINK net dilution breakdown</div>
+          <p>7.5% annualized = 90-day forward × 4.056. At day 90: 15M treasury unlock = +2.06% (discretionary, no on-chain vesting); Reserve buyback = −0.21% (12 weekly events × 0.0176%). Staking v0.2 yield (4.35%) brings rewards-adjusted to +3.16%.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-zinc-200 font-medium mb-1">ETH issuance uses beacon-chain formula</div>
+          <p>CoinDesk <span class="mono">issued</span> field reconstructs from circulating supply and undercounts validator rewards ~30×. We override with <span class="mono">166.3 × sqrt(total_staked_ETH)</span>, matching ethereum.org's cited 1,700 ETH/day at 14M staked. 30-day burn window avoids Dencun artefact.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-zinc-200 font-medium mb-1">AAVE buyback is front-loaded</div>
+          <p>365d figure ($453M) implies ~$37.7M/month but trailing 30d is only $3.6M. Buybacks concentrated post-AIP-434 launch (Apr 2025). Use 30d as near-term signal.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-zinc-200 font-medium mb-1">OP locked &gt; 100% of circ</div>
+          <p>CoinDesk's <span class="mono">locked</span> denominator for pre-minted-supply tokens includes treasury, so it exceeds circulating supply. Documented, not "fixed."</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-zinc-200 font-medium mb-1">FDV for uncapped tokens</div>
+          <p>ETH/SOL have no hard max supply. CoinGecko silently sets FDV = MC, reading as "no dilution risk" — the opposite of truth. We render them as Uncapped and omit FDV/MC.</p>
+        </div>
+        <div class="rounded-lg border border-zinc-900 bg-zinc-950 p-4">
+          <div class="text-zinc-200 font-medium mb-1">LINK / UNI retained revenue</div>
+          <p>DeFiLlama <span class="mono">dailyRevenue</span> reported as-is (LINK ~$55.5M/yr, UNI ~$41.4M/yr). Not zeroed out — revenue is real activity. The Value Accrual Mechanism column (staking for LINK, none for UNI) carries the "token doesn't claim this" story.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="max-w-7xl mx-auto px-4 py-8 text-xs text-zinc-500 border-t border-zinc-900 mt-12">
+    <div class="flex justify-between">
+      <span>As of 2026-04-18 · Subject: <span class="link-accent font-medium">LINK</span></span>
+      <span>Sources: CoinGecko · DeFiLlama · CoinDesk · Dune · Etherscan</span>
+    </div>
+  </footer>
+</body>
+</html>

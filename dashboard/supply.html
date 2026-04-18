@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Supply · Chainlink Peer Valuation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .chart-frame { width: 100%; height: 560px; border: 0; background: white; border-radius: 0.5rem; }
+    .link-accent { color: #2563EB; }
+    .link-row { background: linear-gradient(90deg, rgba(37,99,235,0.08), transparent); }
+    .mono { font-family: 'SF Mono', Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+  <nav class="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style="background:#2563EB"></span>
+        <span class="font-semibold text-white">Chainlink Peer Valuation</span>
+      </a>
+      <div class="flex items-center gap-1"><a href="valuation.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Valuation</a><a href="supply.html" class="px-3 py-2 text-sm rounded-md transition bg-zinc-800 text-white">Supply</a><a href="dormancy.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Dormancy</a><a href="incentives.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Incentives</a><a href="methodology.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Methodology</a></div>
+    </div>
+  </nav>
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    
+    <header class="mb-6 pb-4 border-b border-zinc-900">
+      <h1 class="text-2xl font-semibold text-white">Supply Dynamics</h1>
+      <p class="text-sm text-zinc-400 mt-1">Inflation, unlocks, and buyback offsets on a forward-looking 90-day basis.</p>
+    </header>
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-white mb-4">Supply Dynamics</h2>
+      <div class="overflow-x-auto rounded-lg border border-zinc-900 bg-zinc-950">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-zinc-500 border-b border-zinc-900">
+              <th class="py-3 px-4">Symbol</th>
+              <th class="py-3 px-4 text-right">Gross Inflation</th>
+              <th class="py-3 px-4 text-right">Burn Rate</th>
+              <th class="py-3 px-4 text-right">Net Inflation</th>
+              <th class="py-3 px-4 text-right">Buyback/Burn ($/yr)</th>
+              <th class="py-3 px-4 text-right">Net Dilution (ann)</th>
+              <th class="py-3 px-4 text-right">Rewards-Adj</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">OP</td>
+          <td class="py-2 px-4 mono text-right">-0.00%</td>
+          <td class="py-2 px-4 mono text-right">0.00%</td>
+          <td class="py-2 px-4 mono text-right">-0.00%</td>
+          <td class="py-2 px-4 mono text-right">—</td>
+          <td class="py-2 px-4 mono text-right">+17.85%</td>
+          <td class="py-2 px-4 mono text-right">+17.85%</td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">CRV</td>
+          <td class="py-2 px-4 mono text-right">+5.02%</td>
+          <td class="py-2 px-4 mono text-right">0.00%</td>
+          <td class="py-2 px-4 mono text-right">+5.02%</td>
+          <td class="py-2 px-4 mono text-right">—</td>
+          <td class="py-2 px-4 mono text-right">+9.25%</td>
+          <td class="py-2 px-4 mono text-right">+0.54%</td>
+        </tr>
+        <tr class="link-row border-b border-zinc-900">
+          <td class="py-2 px-4 font-semibold link-accent">LINK</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">0.00%</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">$62.5M</td>
+          <td class="py-2 px-4 mono text-right">+7.51%</td>
+          <td class="py-2 px-4 mono text-right">+3.16%</td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">SOL</td>
+          <td class="py-2 px-4 mono text-right">+5.00%</td>
+          <td class="py-2 px-4 mono text-right">0.05%</td>
+          <td class="py-2 px-4 mono text-right">+4.96%</td>
+          <td class="py-2 px-4 mono text-right">$22.9M</td>
+          <td class="py-2 px-4 mono text-right">+4.96%</td>
+          <td class="py-2 px-4 mono text-right">-1.54%</td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">UNI</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">1.66%</td>
+          <td class="py-2 px-4 mono text-right">-1.66%</td>
+          <td class="py-2 px-4 mono text-right">$40.0M</td>
+          <td class="py-2 px-4 mono text-right">+1.31%</td>
+          <td class="py-2 px-4 mono text-right">+1.31%</td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">ETH</td>
+          <td class="py-2 px-4 mono text-right">+0.85%</td>
+          <td class="py-2 px-4 mono text-right">0.01%</td>
+          <td class="py-2 px-4 mono text-right">+0.84%</td>
+          <td class="py-2 px-4 mono text-right">$25.6M</td>
+          <td class="py-2 px-4 mono text-right">+0.84%</td>
+          <td class="py-2 px-4 mono text-right">-1.86%</td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">LDO</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">0.00%</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">—</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+        </tr>
+        <tr class=" border-b border-zinc-900">
+          <td class="py-2 px-4 text-zinc-200">AAVE</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">0.00%</td>
+          <td class="py-2 px-4 mono text-right">+0.00%</td>
+          <td class="py-2 px-4 mono text-right">$43.0M</td>
+          <td class="py-2 px-4 mono text-right">-2.64%</td>
+          <td class="py-2 px-4 mono text-right">-2.64%</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <p class="text-xs text-zinc-500 mt-3">Net dilution = 90d forward supply panel (inflation + unlocks − buybacks) annualized by ×365/90. Rewards-adjusted subtracts the incentive capture yield available to active holders.</p>
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">90-Day Forward Supply — Gross</h3>
+      <iframe src="charts/forward_supply_total.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">Cumulative new supply entering circulation (inflation + unlock events) as % of current circ.</p>
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">90-Day Forward Supply — Net of Buybacks</h3>
+      <iframe src="charts/forward_supply_net.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">Gross dilution minus buyback/burn offsets (ETH EIP-1559, SOL base fee, AAVE TWAP, LINK Reserve, UNI Firepit).</p>
+    </section>
+    <section class="mb-8">
+      <h3 class="text-sm font-semibold text-zinc-300 mb-3">Gross Issuance, Burn, and Net Inflation</h3>
+      <iframe src="charts/supply_inflation.html" class="chart-frame" loading="lazy"></iframe>
+      <p class="text-xs text-zinc-500 mt-2">Gross issuance (faint) with burn offset (orange, negative) and net inflation (solid). UNI shows negative net due to Firepit burn exceeding zero gross issuance. CRV rate updated to 5.02% post-reduction (source: MetaMask, next cut Aug 2026).</p>
+    </section>
+  </main>
+  <footer class="max-w-7xl mx-auto px-4 py-8 text-xs text-zinc-500 border-t border-zinc-900 mt-12">
+    <div class="flex justify-between">
+      <span>As of 2026-04-18 · Subject: <span class="link-accent font-medium">LINK</span></span>
+      <span>Sources: CoinGecko · DeFiLlama · CoinDesk · Dune · Etherscan</span>
+    </div>
+  </footer>
+</body>
+</html>

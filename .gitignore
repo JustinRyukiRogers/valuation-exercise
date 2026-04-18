@@ -1,0 +1,18 @@
+# Environment
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data — regenerable pipeline outputs
+data/raw/
+data/cache/
+
+# System
+.DS_Store
+
+# Sensitive / not for public repo
+Take-Home Project - Data Analyst, Economics - external April.pdf
+.claude/

@@ -1,0 +1,65 @@
+# Incentive Capture Yield — annualized yield available to active token holders
+#
+# "Active token holder" means someone who has opted into the token's primary
+# yield mechanism: staking, locking, or validating. Passive holders receive
+# nothing. This is distinct from protocol revenue (DeFiLlama) and from
+# token incentive expense (gross inflation × price) — it's the fraction of
+# value that flows *back* to holders who participate.
+#
+# Peers excluded (no yield path to token holders):
+#   UNI  — fee switch is off; governance vote pending; no yield today
+#   LDO  — stETH yield accrues to stETH holders, not LDO holders
+#   OP   — no staking or fee-return mechanism
+#   AAVE — stkAAVE retired post-Aavenomics restructure (AIP-434, 2025-04-17);
+#          Safety Module migrated to umbrella; no simple staking yield to
+#          report for the AAVE token as of this writing
+#
+# as_of: date these figures were last verified. Re-check quarterly.
+
+as_of: "2026-04-17"
+
+yields:
+  - symbol: LINK
+    mechanism: "Staking v0.2 — community + priority migration pool"
+    yield_annualized: 0.0435
+    notes: >
+      Blended APY across the community staking pool (capped at 45M LINK)
+      and priority migration pool. Rewards funded by BUILD program commitments
+      (protocol services paying in their native token, converted to LINK).
+      Rate is broadly stable since v0.2 launch; will compress as pool fills.
+    source_url: "https://staking.chain.link"
+
+  - symbol: ETH
+    mechanism: "Validator consensus + execution layer rewards"
+    yield_annualized: 0.027
+    notes: >
+      Blended annualized yield to validators: consensus-layer issuance
+      (166.3 × sqrt(staked_ETH) / staked_ETH) plus execution-layer priority
+      fees and MEV. Post-Dencun (Mar 2024) execution-layer rewards dropped
+      significantly as L2 calldata moved off-chain; 2.7% reflects current
+      blended rate. Accessible to retail via liquid staking (Lido, Rocket Pool)
+      at slightly lower net yield after fees.
+    source_url: "https://ethereum.org/en/staking/"
+
+  - symbol: SOL
+    mechanism: "Delegated staking"
+    yield_annualized: 0.065
+    notes: >
+      Delegated SOL yield net of ~10% validator commission. Protocol inflation
+      rate is ~4.5% annualized (on its way to 1.5% terminal), but because
+      non-stakers are diluted, the effective real yield to stakers is higher
+      (~6.5% at ~65% staking participation). SIMD-0096 (Jan 2025) routes 100%
+      of priority fees to validators on top of base inflation.
+    source_url: "https://solanacompass.com/staking"
+
+  - symbol: CRV
+    mechanism: "veCRV admin fee share (3CRV)"
+    yield_annualized: 0.0871
+    notes: >
+      Latest Convex veCRV rate (cvxCRV staking APR as of 2026-04-17), used as
+      the representative veCRV yield. Convex aggregates veCRV voting power and
+      distributes 3CRV admin fees + CRV + CVX rewards to cvxCRV stakers; this
+      is the most accessible yield path for CRV holders and broadly tracks the
+      underlying veCRV admin fee rate. Does not include additional gauge voting
+      bribes (Votium etc.) which can further increase yield for active voters.
+    source_url: "https://www.convexfinance.com/stake"
