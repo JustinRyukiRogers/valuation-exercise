@@ -1,0 +1,59 @@
+name: Refresh Dashboard
+
+on:
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Jupyter kernel
+        run: python -m ipykernel install --user --name=chainlink-valuation
+
+      - name: Run ingest
+        env:
+          COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+          COINDESK_API_KEY: ${{ secrets.COINDESK_API_KEY }}
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+        run: |
+          jupyter nbconvert --to notebook --execute --inplace \
+            --ExecutePreprocessor.timeout=300 \
+            --ExecutePreprocessor.kernel_name=chainlink-valuation \
+            notebooks/01_ingest.ipynb
+
+      - name: Run metrics
+        run: |
+          jupyter nbconvert --to notebook --execute --inplace \
+            --ExecutePreprocessor.timeout=300 \
+            --ExecutePreprocessor.kernel_name=chainlink-valuation \
+            notebooks/02_metrics.ipynb
+
+      - name: Run charts
+        run: |
+          jupyter nbconvert --to notebook --execute --inplace \
+            --ExecutePreprocessor.timeout=300 \
+            --ExecutePreprocessor.kernel_name=chainlink-valuation \
+            notebooks/03_charts.ipynb
+
+      - name: Build dashboard HTML
+        run: python scripts/build_dashboard.py
+
+      - name: Commit updated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/metrics/ data/charts/ dashboard/
+          git diff --staged --quiet || git commit -m "refresh: $(date -u +'%Y-%m-%d')"
+          git push
