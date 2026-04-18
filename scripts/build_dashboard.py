@@ -599,8 +599,9 @@ def main():
     df = pd.read_csv(METRICS)
 
     # Render pages
+    redirect = '<!doctype html><html><head><meta charset="utf-8"/><meta http-equiv="refresh" content="0; url=valuation.html"/></head><body></body></html>'
     pages = {
-        "index.html": build_overview(df),
+        "index.html": redirect,
         "valuation.html": build_valuation(df),
         "supply.html": build_supply(df),
         "dormancy.html": build_dormancy(df),
