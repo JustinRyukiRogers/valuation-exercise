@@ -132,8 +132,32 @@ def page(title: str, active: str, body: str) -> str:
         <span class="font-semibold text-white">Chainlink Peer Valuation</span>
       </a>
       <div class="flex items-center gap-1">{nav_items}</div>
+      <button
+        id="refresh-btn"
+        onclick="triggerRefresh()"
+        class="ml-4 px-3 py-1.5 text-xs rounded-md border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition"
+      >Refresh Data</button>
     </div>
   </nav>
+  <script>
+    async function triggerRefresh() {{
+      const btn = document.getElementById('refresh-btn');
+      btn.textContent = 'Triggering…';
+      btn.disabled = true;
+      try {{
+        const r = await fetch('/api/refresh', {{ method: 'POST' }});
+        if (r.ok) {{
+          btn.textContent = 'Triggered — check back in ~2 min';
+        }} else {{
+          const d = await r.json();
+          btn.textContent = 'Error: ' + (d.error || r.status);
+        }}
+      }} catch (e) {{
+        btn.textContent = 'Request failed';
+      }}
+      setTimeout(() => {{ btn.textContent = 'Refresh Data'; btn.disabled = false; }}, 8000);
+    }}
+  </script>
   <main class="max-w-7xl mx-auto px-4 py-8">
     {body}
   </main>

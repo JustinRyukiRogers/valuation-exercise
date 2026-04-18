@@ -21,8 +21,32 @@
         <span class="font-semibold text-white">Chainlink Peer Valuation</span>
       </a>
       <div class="flex items-center gap-1"><a href="valuation.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Valuation</a><a href="supply.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Supply</a><a href="dormancy.html" class="px-3 py-2 text-sm rounded-md transition bg-zinc-800 text-white">Dormancy</a><a href="incentives.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Incentives</a><a href="methodology.html" class="px-3 py-2 text-sm rounded-md transition text-zinc-400 hover:text-white hover:bg-zinc-900">Methodology</a></div>
+      <button
+        id="refresh-btn"
+        onclick="triggerRefresh()"
+        class="ml-4 px-3 py-1.5 text-xs rounded-md border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition"
+      >Refresh Data</button>
     </div>
   </nav>
+  <script>
+    async function triggerRefresh() {
+      const btn = document.getElementById('refresh-btn');
+      btn.textContent = 'Triggering…';
+      btn.disabled = true;
+      try {
+        const r = await fetch('/api/refresh', { method: 'POST' });
+        if (r.ok) {
+          btn.textContent = 'Triggered — check back in ~2 min';
+        } else {
+          const d = await r.json();
+          btn.textContent = 'Error: ' + (d.error || r.status);
+        }
+      } catch (e) {
+        btn.textContent = 'Request failed';
+      }
+      setTimeout(() => { btn.textContent = 'Refresh Data'; btn.disabled = false; }, 8000);
+    }
+  </script>
   <main class="max-w-7xl mx-auto px-4 py-8">
     
     <header class="mb-6 pb-4 border-b border-zinc-900">
