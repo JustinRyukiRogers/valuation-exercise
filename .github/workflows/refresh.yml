@@ -33,7 +33,6 @@ jobs:
         env:
           COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
           COINDESK_API_KEY: ${{ secrets.COINDESK_API_KEY }}
-          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
         run: |
           jupyter nbconvert --to notebook --execute --inplace \
             --ExecutePreprocessor.timeout=300 \
@@ -41,6 +40,10 @@ jobs:
             notebooks/01_ingest.ipynb
 
       - name: Run metrics
+        env:
+          COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+          COINDESK_API_KEY: ${{ secrets.COINDESK_API_KEY }}
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
         run: |
           jupyter nbconvert --to notebook --execute --inplace \
             --ExecutePreprocessor.timeout=300 \
