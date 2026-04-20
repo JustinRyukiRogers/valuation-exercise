@@ -296,8 +296,9 @@ def _uni_supply_dynamics(peer: Peer, default: dict, window_days: int) -> dict:
         # Prior version fetched CoinDesk circulating (~728M) which diverges
         # from CoinGecko (634M after Dec 2025 100M treasury burn) and caused
         # a ~15% denominator error.
-        cg_snap = coingecko.get_snapshot(peer.coingecko_id)
+        cg_snap = coingecko.get_market_snapshot(peer.coingecko_id)
         circ = float(cg_snap["circ_supply"]) if cg_snap.get("circ_supply") else None
+        burn_pct = (projected_tokens / circ) if circ else None
         return {
             "burn_rate_annualized": burn_pct,
             "net_inflation_annualized": (0.0 - burn_pct) if burn_pct is not None else None,

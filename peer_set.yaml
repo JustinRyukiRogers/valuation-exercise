@@ -1,21 +1,5 @@
-# ============================================================================
-# Peer Set Config — flexible list of projects to include in the valuation view.
-# ============================================================================
-# Add, remove, or reorder entries here; the pipeline picks them up automatically.
-# Each entry is a single source of truth that maps a project across data sources.
-#
-# Fields:
-#   symbol            — ticker symbol (display)
-#   name              — human-readable project name
-#   category          — grouping for comparisons (Oracle / L1 / Lending / DEX / ...)
-#   type              — 'protocol' (uses DeFiLlama protocol fees) or 'chain' (uses chain fees)
-#   coingecko_id      — CoinGecko API slug (from coingecko.com URL)
-#   defillama_slug    — DeFiLlama protocol slug (from defillama.com URL)
-#   chain             — primary chain for on-chain queries (ethereum / solana / ...)
-#   contract_address  — token contract address on `chain` (for holder concentration queries)
-#   value_accrual     — qualitative value-accrual mechanism (burn / buyback / staking / none / mixed)
-#   notes             — freeform notes for the methodology doc
-# ============================================================================
+# Peer Set Config 
+
 
 peers:
   - symbol: LINK

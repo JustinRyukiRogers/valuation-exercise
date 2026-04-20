@@ -1,27 +1,4 @@
-"""Dune Analytics client — flagship on-chain queries.
 
-Used for metrics CoinDesk + Etherscan can't cover:
-  * True age-based dormancy (1yr+ untouched ERC-20 balances)
-  * Project-specific events (SKY Smart Burn, MKR/AAVE buybacks)
-
-Budget: Dune free tier allows 2,500 query executions / month. We assume
-daily refresh (≈30 runs/day/query ≈ 90/month per query) so we can afford
-3-5 flagship queries without going over budget.
-
-API flow (see https://docs.dune.com/api-reference/):
-  1. POST /v1/query/{id}/execute      → returns execution_id
-  2. GET  /v1/execution/{id}/status    → poll until state == QUERY_STATE_COMPLETED
-  3. GET  /v1/execution/{id}/results   → fetch the result rows
-
-To avoid hammering on every notebook run we also support:
-  * execute_query(cache_ttl=86400)   — cache results for a day
-  * fetch_latest_results(query_id)   — read the last saved execution without
-                                        re-running (0 credits).
-
-Writing the SQL is out of scope for this module — queries are authored
-interactively on dune.com and referenced here by their numeric ID. This
-keeps the Python side stable and makes the SQL reviewable in the Dune UI.
-"""
 from __future__ import annotations
 
 import time
@@ -54,9 +31,7 @@ def _headers() -> dict:
     return {"X-Dune-API-Key": key, "accept": "application/json"}
 
 
-# ---------------------------------------------------------------------------
-# Low-level query execution (costs 1 credit)
-# ---------------------------------------------------------------------------
+# Low-level queries
 
 
 def _execute(query_id: int, params: Optional[dict] = None) -> str:
@@ -107,11 +82,7 @@ def execute_query(
     *,
     cache_ttl: int = DEFAULT_TTL,
 ) -> pd.DataFrame:
-    """Execute `query_id` on Dune and return rows as a DataFrame.
 
-    Uses the project's on-disk cache (data/cache/) to avoid re-running the
-    same query within `cache_ttl`. Costs 1 query credit when not cached.
-    """
     cache_key = f"dune:execute:{query_id}:{params or {}}"
     cached = cache.get(cache_key, ttl_seconds=cache_ttl)
     if cached is not None:
@@ -124,53 +95,37 @@ def execute_query(
     return pd.DataFrame(rows)
 
 
-# ---------------------------------------------------------------------------
-# Latest-results (0 credits) — recommended default for the dashboard
-# ---------------------------------------------------------------------------
+# Latest-results
 
 
 def fetch_latest_results(query_id: int, cache_ttl: int = DEFAULT_TTL) -> pd.DataFrame:
-    """Fetch the most recent execution's results without re-running.
 
-    Dune scheduled refreshes (configured in the Dune UI) write to this endpoint
-    automatically, so a dashboard can hit it freely. This is how we stay well
-    under the 2,500 credits/month limit.
-    """
     cache_key = f"dune:latest:{query_id}"
     cached = cache.get(cache_key, ttl_seconds=cache_ttl)
     if cached is not None:
         return pd.DataFrame(cached)
 
-    raw = http_get(
-        f"{BASE_URL}/query/{query_id}/results",
-        headers=_headers(),
-        cache_key=None,  # we handle caching one level up, keyed on query_id
-    )
+    try:
+        raw = http_get(
+            f"{BASE_URL}/query/{query_id}/results",
+            headers=_headers(),
+            cache_key=None,
+        )
+    except RuntimeError as e:
+        if "404" in str(e):
+            # No prior execution on Dune's servers — run the query fresh.
+            return execute_query(query_id, cache_ttl=cache_ttl)
+        raise
+
     rows = raw.get("result", {}).get("rows", [])
     cache.set(cache_key, rows)
     return pd.DataFrame(rows)
 
 
-# ---------------------------------------------------------------------------
-# Named flagship queries
-# ---------------------------------------------------------------------------
-#
-# Each of these references a query we've authored on dune.com. The ID lives
-# here; the SQL lives in the Dune UI where it can be versioned/forked.
-#
-# Set these IDs after creating the queries. Until then the helpers raise
-# NotImplementedError with a clear message so callers know what's pending.
+# flagship queries
 
 FLAGSHIP_QUERIES = {
-    # 1yr+ dormant share of ERC-20 circulating supply for a given contract.
-    # Bound parameter: {{contract_address}}
-    "erc20_dormancy": None,
 
-    # SKY Smart Burn Engine: tokens bought and burned in the last N days.
-    # Bound parameter: {{lookback_days}}
-    "sky_smart_burn": None,
-
-    # --- Queries authored for the Chainlink take-home (5-query batch) ---
 
     # Q1: SOL base-fee burn (30d actuals, annualized).
     # Columns: sol_burned_30d_approx, sol_burned_365d_approx, sol_burn_rate_annualized_approx,
@@ -179,40 +134,23 @@ FLAGSHIP_QUERIES = {
     "sol_base_fee_burn": 7328502,
 
     # Q2: LINK treasury outflow from the 15 non-circulating treasury shards (365d).
-    # The original single multisig (0x98C6...) was sharded in June 2022; this query
-    # covers all 15 successor addresses. 3 of 15 were active in the trailing 365d.
     # Columns: link_treasury_outflow_tokens_365d, link_treasury_outflow_annualized_pct, as_of_date
     "link_treasury_outflow": 7328638,
 
     # Q3: AAVE buyback spend (USD) by the Aavenomics TWAP executor bots.
-    # AIP-434 launched 2025-04-17; executors identified via diagnostic query 7328830.
     # Columns: aave_buyback_spend_usd_365d, aave_tokens_bought_365d,
     #          aave_buyback_spend_usd_30d, aave_tokens_bought_30d,
     #          trade_count_365d, as_of_date
     "aave_buyback_spend": 7328824,
 
-    # Q4 (dropped): CRV LP incentive split was scoped out — gross CRV inflation
-    # is used as incentive expense directly. Bribe/LP split is footnote-level
-    # detail, not needed for the peer comparison.
-
     # Q5: Dormancy as "active supply" — sum of balances for addresses whose
-    # latest balance row is within the 180d window. Dormant share is computed
-    # in Python as (total_supply_external - active_supply) / total_supply.
-    # Caveats: CEX hot wallets, MEV bots, and protocol contracts inflate the
-    # "active" figure. Read as "share of supply that has moved recently",
-    # not "share of holders that are active".
     "sol_dormancy": 7328755,            # solana_utils.latest_balances
     "evm_dormancy_ethereum": 7328758,   # tokens_ethereum.balances (LINK/AAVE/UNI/LDO/CRV)
     "evm_dormancy_optimism": 7328772,   # tokens_optimism.balances (OP)
     # Native ETH dormancy: no curated balance table exists on Dune, so this
-    # query reconstructs the native-ETH balance of every address that sent a
-    # successful value-tx in the 180d window (genesis + withdrawals + tx/trace
-    # inflows - outflows - gas). Active supply is the sum of positive balances.
     "eth_dormancy": 7332769,
 
     # Q6: UNI Firepit burn — UNI tokens sent to the burn address on Ethereum
-    # + Unichain. Activated by UNIfication (Jan 2026). Returns daily rows with
-    # cumulative totals and a projected annualized burn rate.
     # Columns: time, amount_raw, amount_usd, days, raw_cum, usd_cum,
     #          projected_burn, projected_burn_usd
     "uni_firepit_burn": 6430914,
@@ -308,15 +246,7 @@ def evm_dormancy_optimism() -> pd.DataFrame:
 
 
 def uni_firepit_burn() -> pd.DataFrame:
-    """UNI tokens burned via the Firepit mechanism (ETH + Unichain).
-
-    UNIfication (effective Jan 1 2026) routes a share of protocol fees to
-    a burn address. Query 6430914 returns one row per day with cumulative
-    totals and a projected annualized figure (cumulative ÷ days × 365).
-
-    Use the most-recent row's `projected_burn` / `projected_burn_usd` as
-    the annualized estimate — these self-update as the burn accumulates.
-    """
+    """UNI tokens burned via the Firepit mechanism (ETH + Unichain)."""
     qid = FLAGSHIP_QUERIES["uni_firepit_burn"]
     if qid is None:
         raise NotImplementedError("Set FLAGSHIP_QUERIES['uni_firepit_burn']")
@@ -328,11 +258,7 @@ def uni_firepit_burn() -> pd.DataFrame:
 
 
 def eth_dormancy() -> pd.DataFrame:
-    """Active native-ETH balance via balance reconstruction (180d).
-
-    Query 7332769 is public but not owned by us — fetch_latest_results (GET,
-    0 credits) works; execute (POST) returns 403.
-    """
+    """Active native-ETH balance via balance reconstruction (180d)."""
     qid = FLAGSHIP_QUERIES["eth_dormancy"]
     if qid is None:
         raise NotImplementedError("Set FLAGSHIP_QUERIES['eth_dormancy']")
@@ -340,14 +266,7 @@ def eth_dormancy() -> pd.DataFrame:
 
 
 def dormancy_summary() -> pd.DataFrame:
-    """Unified active-balance figures across SOL, native ETH, ERC-20s, and OP.
-
-    Returns one row per token with columns:
-        symbol, active_supply_180d, active_address_count,
-        holding_supply_total (NaN for SOL and ETH — no analogous column in
-        the source queries; reconcile against CoinGecko circ_supply in
-        compute.dormancy() instead), as_of_date
-    """
+    """Unified active-balance figures across SOL, native ETH, ERC-20s, and OP."""
     parts = []
     sol = sol_dormancy()
     if not sol.empty:
@@ -366,9 +285,7 @@ def dormancy_summary() -> pd.DataFrame:
     return pd.concat(parts, ignore_index=True)
 
 
-# ---------------------------------------------------------------------------
 # Auth sanity check
-# ---------------------------------------------------------------------------
 
 
 def check_auth() -> dict:

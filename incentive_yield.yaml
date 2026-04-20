@@ -1,20 +1,3 @@
-# Incentive Capture Yield — annualized yield available to active token holders
-#
-# "Active token holder" means someone who has opted into the token's primary
-# yield mechanism: staking, locking, or validating. Passive holders receive
-# nothing. This is distinct from protocol revenue (DeFiLlama) and from
-# token incentive expense (gross inflation × price) — it's the fraction of
-# value that flows *back* to holders who participate.
-#
-# Peers excluded (no yield path to token holders):
-#   UNI  — fee switch is off; governance vote pending; no yield today
-#   LDO  — stETH yield accrues to stETH holders, not LDO holders
-#   OP   — no staking or fee-return mechanism
-#   AAVE — stkAAVE retired post-Aavenomics restructure (AIP-434, 2025-04-17);
-#          Safety Module migrated to umbrella; no simple staking yield to
-#          report for the AAVE token as of this writing
-#
-# as_of: date these figures were last verified. Re-check quarterly.
 
 as_of: "2026-04-17"
 

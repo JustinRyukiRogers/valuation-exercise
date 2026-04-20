@@ -1,14 +1,4 @@
-"""DeFiLlama client — TVL, fees, and revenue data.
 
-No API key required. Endpoints used (all confirmed free as of April 2026):
-  * /protocol/{slug}              — protocol detail + TVL history
-  * /summary/fees/{slug}          — fee and revenue totals + daily chart
-  * /overview/fees                — global fees overview (all protocols)
-  * /protocols                    — all protocols list (includes CEX entries)
-  * /chains                       — per-chain TVL
-
-Paywalled (don't use): /emissions, /emission/{slug}, /treasuries
-"""
 from __future__ import annotations
 
 from typing import Literal, Optional
@@ -20,7 +10,7 @@ from src.http import request
 BASE_URL = "https://api.llama.fi"
 
 # Cache TTL in seconds — 1 hour is fine since we're looking at daily granularity
-DEFAULT_TTL = 1
+DEFAULT_TTL = 3_600
 
 DataType = Literal["dailyFees", "dailyRevenue"]
 
